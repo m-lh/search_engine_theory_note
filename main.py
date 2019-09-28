@@ -561,10 +561,24 @@ Copyright 1998 - 2019 Tencent. All Rights Reserved
 
 if __name__ == '__main__':
     import time
-    keyword = input("关键字: ")
-    start_time = time.time()
-    results = [line.replace(keyword, "**{}**".format(keyword)) for line in content.splitlines() if keyword in line]
-    end_time = time.time()
-    print(f"共找到{len(results)}个结果, 用时 {end_time-start_time}s:")
-    for index, result in enumerate(results):
-        print(index+1, ".", result)
+    import jieba
+
+    while True:
+        keywords = input("关键字: ")
+        start_time = time.time()
+        keys = [k.strip() for k in jieba.cut(keywords) if k.strip()]
+        print(keys)
+        results = []
+        for line in content.splitlines():
+            ifmatch = True
+            for keyword in keys:
+                if keyword not in line:
+                    ifmatch = False
+                else:
+                    line = line.replace(keyword, "**{}**".format(keyword))
+            if ifmatch:
+                results.append(line)
+        end_time = time.time()
+        print(f"共找到{len(results)}个结果, 用时 {end_time-start_time}s:")
+        for index, result in enumerate(results):
+            print(index+1, ".", result)
